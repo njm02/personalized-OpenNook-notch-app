@@ -1,49 +1,77 @@
 # Personal Notch App
 
-A native macOS menu-bar app inspired by Boring Notch, with Calendar, Spotify Music, Focus Timer, and a reserved Home page. Built with SwiftUI, AppKit, EventKit, and OpenNook.
+A native macOS menu-bar utility that turns the MacBook notch into a compact calendar, Spotify player, and focus timer. Built with SwiftUI and [OpenNook](https://opennook.dev/), with interaction inspiration from [Boring Notch](https://theboring.name/).
 
-## Save, open, and quit
+**Status:** Development prototype. Build and logic checks pass; the latest visual changes and account interactions still need manual verification. Design intentions, decisions, and testing evidence are recorded in [PROCESS.md](PROCESS.md).
 
-The source and built app are already saved in this project folder. Use **File → Save All** in VS Code for any unsaved edits. Keep a backup of this folder; `.build` is a disposable build cache.
+## Features
 
-For everyday use:
+- **Calendar:** Month grid, selected-day agenda, calendar selection, and distinct event markers. Reads calendars available through Apple Calendar, including synced Google calendars.
+- **Music:** Spotify desktop artwork, playback controls, seeking, and artwork-colored animated bars.
+- **Focus timer:** Typed duration, pause/resume, reset, and a five-minute extension.
+- **Compact live mode:** Music artwork/bars or timer countdown based on the selected screen.
+- **Consistent layout:** Icon navigation, a quiet idle notch, and a custom sparkle menu-bar mark. Home is reserved for future widgets.
 
-1. Quit the running copy using the **sparkle icon in the menu bar → Quit**.
-2. In Finder, copy **`dist/OpenNookStarter.app`** into **Applications**.
-3. Double-click **OpenNookStarter** in Applications to open it. VS Code is not required.
-4. To close it completely, use **sparkle icon → Quit**. Moving away from the notch only collapses it.
+## Requirements
 
-There is no Dock icon. Replacing the installed app is only necessary after rebuilding changes. Keep the project folder as well as the installed app so you can edit it later. Quitting resets the timer; the selected calendar and Spotify connection preference are saved locally.
+- macOS 15 or later; a notched MacBook is the intended display.
+- Compatible full Xcode with Swift 5.9 or later selected as the developer toolchain.
+- Spotify desktop app for music features; an account in Apple Calendar for calendar features.
 
-## Connections
+OpenNook is vendored locally. No additional package installation is required.
 
-- **Calendar:** Add your class calendar to Apple Calendar, then use **Connect Calendar** and select it in the notch. macOS requests full calendar access; this app only reads events.
-- **Music:** Sign into Spotify's desktop app, then click **Connect Spotify** and allow macOS Automation access.
-- **Timer:** Enter minutes (`25`) or minutes:seconds (`25:30`), then press Return, Set, or Start. Pause before editing the duration.
+## Build and run
 
-Compact live mode follows the selected page: Music shows artwork/bars while playing; Timer shows its running countdown. Home and Calendar remain quiet. Music bars are decorative, not audio measurements. Home widgets, the Spotify queue, and timer alerts are unfinished.
-
-## Develop and rebuild
-
-Requires macOS 15+, Swift 5.9+, and compatible full Xcode. In a terminal:
+Clone or download this repository, open its root folder in a terminal, then run:
 
 ```sh
-cd "/Users/njm2/Documents/hello world/week 8/personalized OpenNook notch app"
 ./Scripts/package-app.sh debug
 open dist/OpenNookStarter.app
 ```
 
-Quit the app before rebuilding. For Release, use `./Scripts/package-app.sh release`. Copy the rebuilt app to Applications to update the installed version. Use the bundled app for permission testing.
+Use the bundled app for calendar and Spotify permissions. `swift build` checks compilation, but `swift run` does not supply the bundle's permission descriptions.
 
-Checks: `./Scripts/check-models.sh` and `./Scripts/check-artwork-palette.sh`. Debug build, packaging, signature, and logic checks passed; the latest visual and account interactions still need manual verification. See [PROCESS.md](PROCESS.md).
+For a Release build:
 
-## Files and credits
+```sh
+./Scripts/package-app.sh release
+```
 
-- `Sources/OpenNookStarter/`: screens, calendar/Spotify connections, timer, and styles.
-- `App/Info.plist`, `Scripts/`, `Tests/`: app metadata, packaging, and checks.
-- `Vendor/opennook/`: local OpenNook 0.4.0 subset; [modifications](Vendor/opennook/LOCAL_CHANGES.md).
-- `docs/screenshots/`: references and labeled fixture previews; runtime comparisons are still needed.
+Both commands produce an ad-hoc signed `dist/OpenNookStarter.app`. Quit the running copy before rebuilding.
 
-[OpenNook](https://github.com/twinkling-reality/opennook) supplies the window/hover framework (Apache-2.0; NookSurface is MIT). Calendar, player, and timer layouts adapt its [ShowcaseNook examples](https://github.com/twinkling-reality/opennook/tree/2b50b5c3a99df8914e25e199d29bf7aa505f7a59/Examples/ShowcaseNook), copyright 2026 Glendon Chin. [Boring Notch](https://theboring.name/) is an interaction reference. Apple documentation: [SwiftUI](https://developer.apple.com/documentation/swiftui), [AppKit](https://developer.apple.com/documentation/appkit), [EventKit](https://developer.apple.com/documentation/eventkit). Spotify integration uses its installed scripting dictionary, not a third-party SDK.
+## Install and use
 
-Development is paused as of November 9, 2026. [Earlier detailed README](docs/archive/README-2026-11-09.md).
+Copy `dist/OpenNookStarter.app` into **Applications** and double-click it. The app runs independently of VS Code and has no Dock icon. Use **sparkle menu-bar icon → Quit** to close it; moving away from the notch only collapses it.
+
+- **Calendar:** Click Connect Calendar, approve access, and select a calendar. macOS requests full calendar access; the app only reads events.
+- **Spotify:** Sign into the desktop app, click Connect Spotify, and approve Automation access.
+- **Timer:** Enter `25` for minutes or `25:30` for minutes:seconds, then press Return, Set, or Start. Pause before editing.
+
+Installed copies do not update automatically. Rebuild, quit, replace the app in Applications, and reopen it. Keep the source folder for future edits.
+
+## Checks and limitations
+
+```sh
+./Scripts/check-models.sh
+./Scripts/check-artwork-palette.sh
+```
+
+Checks cover calendar calculations, timer/input behavior, live-mode selection, motion continuity, and artwork tint. Runtime verification is tracked in [PROCESS.md](PROCESS.md).
+
+Home widgets, Spotify queue/remote-device control, timer alerts, and general widget customization are unfinished. Timer state resets on quit. Music bars indicate playback status, not audio levels. Calendar refresh relies on macOS synchronization.
+
+## Project structure
+
+| Path | Purpose |
+| --- | --- |
+| `Sources/OpenNookStarter/` | Screens, calendar/Spotify connections, timer, and styles |
+| `App/Info.plist` | Bundle identity and permission descriptions |
+| `Scripts/` and `Tests/` | Packaging and logic checks |
+| `Vendor/opennook/` | OpenNook 0.4.0 subset, licenses, and [local changes](Vendor/opennook/LOCAL_CHANGES.md) |
+| `docs/screenshots/` | Reference images and labeled synthetic previews |
+
+## Credits
+
+[OpenNook](https://github.com/twinkling-reality/opennook) provides the notch framework under Apache-2.0, with MIT-licensed NookSurface. Calendar, player, and timer layouts adapt its [ShowcaseNook examples](https://github.com/twinkling-reality/opennook/tree/2b50b5c3a99df8914e25e199d29bf7aa505f7a59/Examples/ShowcaseNook), copyright 2026 Glendon Chin. Original notices are retained in the vendored source and packaged app.
+
+Native APIs: Apple [SwiftUI](https://developer.apple.com/documentation/swiftui), [AppKit](https://developer.apple.com/documentation/appkit), and [EventKit](https://developer.apple.com/documentation/eventkit). Spotify integration uses its installed scripting dictionary. AI contributions and supplied visual references are credited in [PROCESS.md](PROCESS.md).
