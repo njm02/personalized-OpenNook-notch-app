@@ -75,3 +75,4 @@ Codex's first response (verbatim):
 **Unfinished:** Home is still a placeholder because I deferred it while refining the main screens. General widget customization is not implemented. Spotify desktop scripting supplies playback controls but does not expose its queue, so queue display remains unfinished.
 
 Next session: test the current bundle, record actual observations and screenshots, fix readability or interaction issues, then design Home. The November 9 documentation edits clarify the assignment record; they add no new runtime evidence.
+
